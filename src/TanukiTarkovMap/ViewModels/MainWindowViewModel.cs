@@ -100,6 +100,28 @@ namespace TanukiTarkovMap.ViewModels
         }
         #endregion
 
+        #region WebView Opacity Properties
+        private double _webViewOpacity = 1.0;
+        /// <summary> WebView 투명도 (0.0 ~ 1.0) </summary>
+        public double WebViewOpacity
+        {
+            get => _webViewOpacity;
+            set
+            {
+                if (SetProperty(ref _webViewOpacity, value))
+                {
+                    // Settings에 저장
+                    var settings = App.GetSettings();
+                    settings.WebViewOpacity = value;
+                    App.SetSettings(settings);
+                    Settings.Save();
+
+                    Logger.SimpleLog($"[WebViewOpacity] Changed to: {value:F2}");
+                }
+            }
+        }
+        #endregion
+
         #region Computed Bounds Properties (Read-only)
         /// <summary> 현재 창의 Rect (현재 모드의 위치/크기) </summary>
         public Rect CurrentWindowBounds => new Rect(CurrentWindowLeft, CurrentWindowTop, CurrentWindowWidth, CurrentWindowHeight);
@@ -197,6 +219,10 @@ namespace TanukiTarkovMap.ViewModels
             // Load WebView zoom level
             _selectedZoomLevel = _settings.WebViewZoomLevel > 0 ? _settings.WebViewZoomLevel : 67;
             OnPropertyChanged(nameof(SelectedZoomLevel));
+
+            // Load WebView opacity
+            _webViewOpacity = _settings.WebViewOpacity >= 0.0 && _settings.WebViewOpacity <= 1.0 ? _settings.WebViewOpacity : 1.0;
+            OnPropertyChanged(nameof(WebViewOpacity));
 
             // Load last selected map
             if (!string.IsNullOrEmpty(_settings.SelectedMapId))

@@ -188,6 +188,9 @@ namespace TanukiTarkovMap.Views
                 case nameof(MainWindowViewModel.SelectedZoomLevel):
                     HandleZoomLevelChanged();
                     break;
+                case nameof(MainWindowViewModel.WebViewOpacity):
+                    HandleWebViewOpacityChanged();
+                    break;
             }
         }
 
@@ -315,6 +318,15 @@ namespace TanukiTarkovMap.Views
         }
 
         /// <summary>
+        /// Window 투명도 변경 처리
+        /// </summary>
+        private void HandleWebViewOpacityChanged()
+        {
+            // Window.Opacity는 XAML 바인딩으로 자동 처리됨
+            Logger.SimpleLog($"[HandleWebViewOpacityChanged] Window opacity changed to: {_viewModel.WebViewOpacity:F2}");
+        }
+
+        /// <summary>
         /// 맵 선택 드롭다운 변경 처리
         /// </summary>
         private async Task HandleSelectedMapChanged()
@@ -393,15 +405,20 @@ namespace TanukiTarkovMap.Views
             {
                 Logger.SimpleLog("InitializeWebView: Start");
 
+                // WebView2 투명도 환경 초기화
+                WebViewOpacityService.InitializeEnvironment();
+
                 // WebView2 생성
                 _webView = new WebView2
                 {
-                    DefaultBackgroundColor = System.Drawing.Color.FromArgb(26, 26, 26),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Width = double.NaN,  // 자동 크기 조정
                     Height = double.NaN  // 자동 크기 조정
                 };
+
+                // WebView2 투명 배경 설정
+                WebViewOpacityService.SetWebViewTransparent(_webView);
 
                 // WebViewContainer에 추가
                 WebViewContainer.Child = _webView;
@@ -494,6 +511,9 @@ namespace TanukiTarkovMap.Views
                 double zoomFactor = _viewModel.SelectedZoomLevel / 100.0;
                 webView.ZoomFactor = zoomFactor;
                 Logger.SimpleLog($"[WebView_NavigationCompleted] Applied initial zoom: {_viewModel.SelectedZoomLevel}% (ZoomFactor: {zoomFactor})");
+
+                // 웹 페이지 배경을 투명하게 설정
+                await WebViewOpacityService.SetWebPageTransparentAsync(webView);
 
                 // 기본 작업들
                 await RemoveUnwantedElements(webView);

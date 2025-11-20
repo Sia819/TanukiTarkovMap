@@ -24,6 +24,7 @@
         AllowsTransparency="True"
         ResizeMode="{Binding ResizeMode}"
         Topmost="{Binding IsTopmost}"
+        Opacity="{Binding WebViewOpacity}"
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
 
@@ -62,7 +63,7 @@
 
                 <!-- WebView2 영역 (전체) -->
                 <Border x:Name="WebViewContainer"
-                        Background="#FF212121"
+                        Background="Transparent"
                         CornerRadius="0,0,8,8"
                         Margin="0,20,0,0"
                         ClipToBounds="True">
@@ -143,6 +144,31 @@
                                 <Style TargetType="ComboBoxItem" BasedOn="{StaticResource DarkComboBoxItem}"/>
                             </ComboBox.ItemContainerStyle>
                         </ComboBox>
+
+                        <!-- 투명도 조정 -->
+                        <TextBlock Text="💧"
+                                   Foreground="#FF888888"
+                                   VerticalAlignment="Center"
+                                   Margin="16,0,4,0"
+                                   FontSize="12"
+                                   WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        <Slider x:Name="OpacitySlider"
+                                Minimum="0.1"
+                                Maximum="1.0"
+                                Value="{Binding WebViewOpacity, Mode=TwoWay}"
+                                Width="80"
+                                Height="18"
+                                VerticalAlignment="Center"
+                                WindowChrome.IsHitTestVisibleInChrome="True"
+                                TickFrequency="0.1"
+                                IsSnapToTickEnabled="False"/>
+                        <TextBlock Text="{Binding WebViewOpacity, StringFormat={}{0:P0}}"
+                                   Foreground="#FF888888"
+                                   VerticalAlignment="Center"
+                                   Margin="4,0,0,0"
+                                   FontSize="10"
+                                   Width="30"
+                                   WindowChrome.IsHitTestVisibleInChrome="True"/>
 
                         <!-- PIP 모드 UI 요소 숨기기 체크박스 -->
                         <CheckBox x:Name="PipHideWebElementsCheckBox"

@@ -42,6 +42,9 @@ namespace TanukiTarkovMap.Models.Data
         // WebView 배율 설정
         public int WebViewZoomLevel { get; set; } = 67;             // WebView 배율 (%)
 
+        // WebView 투명도 설정
+        public double WebViewOpacity { get; set; } = 1.0;           // WebView 투명도 (0.0 ~ 1.0)
+
         public override string ToString()
         {
             return $"gameFolder: '{GameFolder}' \nscreenshotsFolder: '{ScreenshotsFolder}'";
